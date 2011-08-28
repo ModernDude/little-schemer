@@ -1,203 +1,123 @@
 
-(load "00-common.scm")
 
-(atom? 'turkey)
-;; #t
-
-(atom? 1492)
-;; #t
-
-(atom? 'u)
-;; #t
-
-(atom? '*abc$)
-;; #t
-
-'(atom)
-'(atom turkey or)
-'((atom turkey) or )
-'(x y z)
-'((x y) z)
-'(how are you doing so far)
-'(((how ) are) ((you) (doing so)) far)
-'() 
-
-(atom? ())
-;;#f
-
-'(() () ())
-
-(car '(a b c))
-;;a
-
-(car '((a b c) x y z))
-;; (a b c)
-
-(car 'hotdog)
-;; No Answer
-
-(car '())
-;; No Answer
-
-(car '(((hotdogs)) (and) (pickle) relish))
-
-;; ((hotdogs))
-
-(car (car '(((hotdogs)) (and))))
-;; (hotdogs)
-
-;;; The Law of Car
-;;; The primitive car in defined only for non-emyty lists.
-
-(cdr '(a b c))
-;; (b c)
-
-(cdr '((a b c) x y z))
-;; (x y z)
-
-(cdr '(hamburger))
-;; ()
-
-(cdr '((x) t r ))
-;; (t r)
-
-(cdr '(hotdogs))
-;; ()
-
-(cdr '())
-;; bad news
-
-;;; The Law of Cdr
-;;; The primitive cdr is defined only for non-empty lists. The cdr of
-;;; anf non-empty list is always another list.
-
-(car (cdr '((b) (x y ) ((c)))))
-;; (x y)
-
-(cdr (cdr '((b) (x y) ((c)))))
-;; (((c)))
-
-(cdr (car '(a (b (c)) d)))
-;; nope
-
-(cons 'peanut '(butter and jelly))
-;; (peanut butter and jelly)
-
-(cons '(banana and) '(peanut butter and jelly))
-;; ((banana and) peanut butter and jelly)
-
-(cons '((help) this) '(is very ((hard) to learn)))
-;; (((help) this) is very ((hard) to learn))
-
-(cons '(a b (c)) '())
-;; ((a b (c)))
-
-(cons 'a ())
-;; (a)
-
-(cons '((a b c)) 'b)
-;; (((a b c)) . b)
-;; did not expect this to work. What is the . ?
-;;
-;;
-(car  (cons '((a b c)) 'b)) ;; (a b c)
-(cdr (cons '((a b c)) 'b)) ;; b
-
-;; so the cdr was not a list. hmmmm
-
-
-(cons 'a 'b)
-;;  (a . b)
-;; This must be a dotted pair
-
-(pair? (cons 'a 'b))
-;; #t
-;; getting ahead of the book hear
-
-
-;;; The Law of cons
-;;; The primitive cons takes two arguments. The second argument must
-;;; be a list. The result is a list.
-
-(cons 'a (car '((b) c d)))
-;Value:  (a b)
-
-(cons 'a (cdr '((b) c d )))
-;; (a c d)
-
-(null? '())
-;Value: #t
-
-(null? (quote ()))
-;Value: #t
-
-(null? '(a b c))
-;Value: #f
-
-(null? 'spaghetti)
-;Value: #f
-
-
-;;; The Law of Null?
-;;; The primitive null? is defined only for lists.
-
-
-(atom? 'Harry)
-;;Value: #t
-
-(atom? '(Harry had a heap of apples))
-;; Value: #f
-
-(atom? (car '(Harry had a heap of apples)))
-;; Value: #t
-
-
-(atom? (cdr '(Harry had a heap of apples)))
-;; Value: #f
-
-(atom? (cdr '(Harry)))
-;; Value: #f
-
-(atom? (car (cdr '(swing low sweet cherry oat))))
-;; Value: #t
-
-(atom? (car (cdr '(swing (low sweet) cherry oat))))
-;; Value: #f
-
-(eq? 'Harry 'Harry)
-;; Value: #t
-
-(eq? 'margarine 'butter)
-;; Value: #f
-
-(eq? '()  '(strawberry))
-;; Value: #f
-
-(eq? 6 7)
-;; Value: #f
-
-;;; The Law of Eq?
-;;; The primitive eq? must be a non-numeric atom.
-
-(eq? '() '())
-;;; #t
-;;; interesting
-
-(eq? '(hh) '(hh))
-;;; #f
-
-
-(eq? 2 2)
-;;; #t
-;;; again... interesting....
-
-
-(eq? (car '(Mary had a little lamb chop)) 'Mary)
-;; Value: #t
-
-(eq? (cdr '(soured milk) 'milk))
-;; no dice
-
-(eq? (car '(beans beans we need jelly beans))
-     (car (cdr '(beans beans we need jelly beans))))
-;; Value: #t
+(define atom?
+  (lambda (x)
+    (and (not (pair? x)) (not (null? x)))))
+
+
+(define lat?
+  (lambda (l)
+    (cond
+     ((null? l) #t)
+     ((atom? (car l)) (lat? (cdr l)))
+     (else #f))))
+
+
+(define member?
+  (lambda (a lat)
+    (cond
+     ((null? lat) #f)
+     (else (or (eq? (car lat) a)
+               (member? a (cdr lat)))))))
+
+
+;;; Take an atom and a list of atoms and makes a new list of
+;;; atoms with the first occurence of the atom in the old list
+;;; removed.
+(define rember
+  (lambda (a lat)
+    (cond
+     ((null? lat) (quote ()))
+     ((eq? (car lat) a) (cdr lat))
+     (else (cons (car lat)
+                 (rember a (cdr lat)))))))
+
+
+;;; Take a list and build another list composed
+;;; of the first S-expression within each internal
+;;; sublist
+(define firsts
+  (lambda (l)
+    (cond
+     ((null? l) '())
+     (else (cons (car (car l))
+                 (firsts (cdr l)))))))
+     
+;;; Build a lat with new inserted to the right of the first
+;;; occurance of old.
+(define insertR
+  (lambda (new old lat)
+    (cond
+     ((null? lat) (quote ()))
+     (else (cond
+            ((eq? (car lat) old)
+             (cons old
+                   (cons new (cdr lat))))
+             (else (cons (car lat)
+                   (insertR new old
+                            (cdr lat)))))))))
+
+;;; Build a lat with new inserted to the left  of the first
+;;; occurance of old.
+(define insertL
+  (lambda (new old lat)
+    (cond
+     ((null? lat) (quote ()))
+     (else (cond
+            ((eq? (car lat) old)
+             (cons new lat))
+            (else (cons (car lat)
+                        (insertL new old
+                                 (cdr lat)))))))))
+
+;;; Replaces the first occurrence of old in the lat with new.
+(define subst
+  (lambda (new old lat)
+    (cond
+     ((null? lat) (quote ()))
+     (else (cond
+            ((eq? (car lat) old)
+             (cons new (cdr lat)))
+            (else (cons (car lat)
+                        (subst new old
+                               (cdr lat)))))))))
+
+;;; Replaces the first occurrence of o1 or the first occurrence of o2
+;;; by new 
+(define subst2
+  (lambda (new o1 o2 lat)
+    (cond
+     ((null? lat) (quote ()))
+     (else (cond
+            ((or (eq? (car lat) o1)
+                 (eq? (car lat) o2))
+                (cons new (cdr lat)))
+            (else (cons (car lat)
+                        (subst2 new o1 o2 (cdr lat)))))))))
+
+;;; Remove all occrences of a
+(define multirember
+  (lambda (a lat)
+    (cond
+     ((null? lat) (quote ()))
+     (else
+      (cond
+       ((eq? (car lat) a)
+        (multirember a (cdr lat)))
+       (else (cons (car lat)
+                   (multirember a  (cdr lat)))))))))
+
+
+(define multiinsertL
+  (lambda (new old lat)
+    (cond
+     ((null? lat) (quote ()))
+     (else
+      (cond
+       ((eq? (car lat) old)
+        (cons new
+              (cons old
+                    (multiinsertL new old
+                                  (cdr lat)))))
+       (else (cons (car lat))
+             (multiinsertL new old (cdr lat))))))))
