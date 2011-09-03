@@ -1,4 +1,4 @@
-(load "01-toys.scm")
+(load "./../src/source.scm")
 (load "./../lib/test-manager/load.scm")
 
 
@@ -11,14 +11,11 @@
    (assert-true (atom? '*abc$) "Symbol with special chars is atom")
    (assert-false (atom? '()) "Empty list is not an atom"))
  (define-test (car-tests)
-   (assert-equal 'a
-                 (car '(a b c))
+   (assert-equal 'a (car '(a b c))
                  "Car removes first atom in non empty list")
-   (assert-equal '(a b c)
-                 (car '((a b c) x y z))
+   (assert-equal '(a b c) (car '((a b c) x y z))
                  "Removes a list")
-   (assert-equal '((hotdogs))
-                 (car '(((hotdogs)) (and) (pickle) relish))
+   (assert-equal '((hotdogs)) (car '(((hotdogs)) (and) (pickle) relish))
                  "Remove list of list"))
  (define-test (cdr-tests)
    (assert-equal '(b c) (cdr '(a b c))
@@ -37,11 +34,9 @@
    (assert-equal '(((help) this) is very ((hard) to learn))
                  (cons '((help) this) '(is very ((hard) to learn)))
                  "cons sexp onto sexp")
-   (assert-equal '((a b (c)))
-                 (cons '(a b (c)) '())
+   (assert-equal '((a b (c))) (cons '(a b (c)) '())
                  "cons sexp onto empty list")
-   (assert-equal '(a)
-                 (cons 'a '())
+   (assert-equal '(a) (cons 'a '())
                  "cons symbol onto empty list"))
  (define-test (null-tests)
    (assert-true (null? '()) "empty list is null")
@@ -50,46 +45,24 @@
  )
 
 
+(in-test-group
+ do-it-do-it
+ (define-test (atom-test)
+   (assert-true (lat? '(Jack Sprat could eat no chicken fat))
+                "many symbols is as list is a lat")
+   (assert-false (lat? '((Jack) could eat no chicken fat))
+                 "sexp of symbols is not lat")
+   (assert-true (lat? '())
+                "empty list is a lat"))
+ (define-test (member-test)
+   (assert-false (member? 'poached '(fried eggs and scrambled eggs))
+                 "Symbol is not in list")
+   (assert-true (member? 'meat '(mashed potatoes and meat gravy))
+                 "Symbol is in list")
+   (assert-false (member? 'liver '())
+                 "Symbol is not in empty list")))
 
-(lat? '(Jack Sprat could eat no chicken fat))
-;; #t
 
-(lat? '((jack) Sprat could eat no chicken fat))
-;; #f
-
-(lat? '(Jack (Sprat could) eat no chicken fat))
-;; #f
-
-(lat? '())
-;; #t
-
-(member? 'tea '(cofee tea or milk))
-;; #t
-
-(member? 'poached '(fried eggs and scrambled eggs))
-;; #f
-
-(member? 'meat '(mashed potatoes and meat gravy))
-;; #t
-
-;;; The First Commandment
-;;; Always ask null? as the first question in expressing anf function.
-
-(member? 'liver '(bagels and lox))
-;; #f
-
-(member? 'liver '())
-;; #f
-
-;;;
-;;;
-;;;
-;;;
-;;;
-;;;
-;;;
-;;;
-cons
 
 (rember 'mint '(lamb chops and mint jelly))
 ;; (lamb chops and jelly)
