@@ -1,7 +1,6 @@
 (load "./../src/source.scm")
 (load "./../lib/test-manager/load.scm")
 
-
 (in-test-group
  toys
  (define-test (atom-tests)
@@ -46,7 +45,7 @@
 
 
 (in-test-group
- do-it-do-it
+ do-it-do-it-again-and-again-and-again
  (define-test (atom-test)
    (assert-true (lat? '(Jack Sprat could eat no chicken fat))
                 "many symbols is as list is a lat")
@@ -62,88 +61,52 @@
    (assert-false (member? 'liver '())
                  "Symbol is not in empty list")))
 
+(in-test-group
+ cons-the-magnificent
+ (define-test (rember-test)
+   (assert-equal '(lamb chops and jelly)
+                 (rember 'mint '(lamb chops and mint jelly))
+                 "Remove one symbol from list")
+   (assert-equal '(lamb chops and flavored mint jelly)
+                 (rember 'mint '(lamb chops and mint flavored mint jelly))
+                 "Only remove first symbol from list")
+   (assert-equal '(lamb chops and jelly)
+                 (rember 'missing '(lamb chops and jelly))
+                 "Do not remove when member not found."))
+ (define-test (firsts-test)
+   (assert-equal '(apple plum grape bean)
+                 (firsts '((apple peach pumpkin)
+                           (plum pear cherry)
+                           (grape raisin pea)
+                           (bean carrot eggplant)))
+                 "first item in each listt"))
+ (define-test (insertR-test)
+   (assert-equal '(ice cream with fudge topping for dessert)
+                 (insertR 'topping 'fudge '(ice cream with fudge for dessert))
+                 "insert symb to right of another")
+   (assert-equal '(ice cream with fudge for dessert)
+                 (insertR 'topping 'bogus '(ice cream with fudge for dessert))
+                 "insert not found "))
+ (define-test (insertL-test)
+   (assert-equal '(ice cream with topping fudge for dessert)
+                 (insertL 'topping 'fudge '(ice cream with fudge for dessert))
+                 "insert found value to left of symbol")
+   (assert-equal '(ice cream with fudge for dessert)
+                 (insertL 'topping 'bogus '(ice cream with fudge for dessert))
+                 "insert not found"))
+ (define-test (subst2-test)
+   (assert-equal '(vanilla ice cream with chocolate topping)
+                 (subst2 'vanilla 'chocolate 'banana
+                         '(banana ice cream with chocolate topping))
+                 "change first found value")
+   (assert-equal '(vanilla bananna ice cream with  topping)
+                 (subst2 'vanilla 'bananna 'chocolate
+                         '(chocolate bananna ice cream with topping))
+                 "second search symb is found first"))
+ (define-test (multirember-test)
+   (assert-equal '(coffee tea and hick)
+                 (multirember 'cup '(coffee cup tea cup and hick cup))
+                 "remove item when in list twice")))
 
 
-(rember 'mint '(lamb chops and mint jelly))
-;; (lamb chops and jelly)
-
-(rember 'mint '(lamb chops and mint flavored mint jelly))
-;; (lamb chops and flavored mint jelly)
-
-(rember 'toast '(bacon lettuce and tomato))
-;; (bacon lettuce and tomato)
-
-(rember 'cup '(coffee cup tea cup and hick cup))
-;; (coffee tea cup and hick cup)
-
-(rember 'bacon '(bacon lettuce and tomato))
-;; (lettuce and tomato)
-
-;;; The Second Commandment
-;;; Use cons to build lists.
-
-(rember 'sauce '(soy sauce and tomato sauce))
-;; (soy and tamato sauce)
-
-(firsts '((apple peach pumpkin)
-          (plum pear cherry)
-          (grape raisin pea)
-          (bean carrot eggplant)))
-;;; (apple plum grape bean)
-
-(firsts '((a b) (c d) (e f)))
-;;; (a c e)
-
-(firsts '())
-;;; ()
-
-(firsts '(((five plums) four)
-        (eleven green oranges)
-        ((no) more)))
-;;; ((five plums) eleven (no))
-
-
-;;; Third Commandment
-;;; When building a list, describe the first typical element, and then
-;;; cons it onto the natural recursion.
-
-(insertR 'topping 'fudge '(ice cream with fudge for dessert))
-;;; (ice cream with fudge topping for dessert)
-
-(insertR 'jalapeno 'and '(tacos tamales and salsa))
-;;; (tacos tamales and jalapeno salsa)
-
-(insertR 'e 'd '(a b c d f g d h))
-;;; (a b c d e f g d h)
-
-(insertL 'topping 'fudge '(ice cream with fudge for dessert))
-;;; (ice cream with topping fudge for dessert)
-
-(insertL 'jalapeno 'and '(tacos tamales and salsa))
-;;; (tacos tamales jalapeno and salsa)
-
-(insertL 'e 'd '(a b c d f g d h))
-;;; (a b c e d f g d h)
-
-
-(subst 'topping 'fudge '(ice cream with topping for dessert))
-;;; (ice cream with topping for dessert)
-
-(subst2 'vanilla 'chocolate 'banana '(banana ice cream with chocolate topping))
-;;; (vanilla ice cream with chocolate topping)
-
-(subst2 'vanilla 'chocolate 'topping '(banana ice cream with chocolate topping))
-;;; (bananna ice cream with vanilla topping)
-
-(multirember 'cup '(coffee cup tea cup and hick cup))
-;;; (coffee tea and hick)
-
-
-
-
-
-
-
-(run-registered-tests)
-
-
+ (run-registered-tests)

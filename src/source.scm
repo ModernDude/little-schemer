@@ -121,3 +121,4 @@
                                   (cdr lat)))))
        (else (cons (car lat))
              (multiinsertL new old (cdr lat))))))))
+
