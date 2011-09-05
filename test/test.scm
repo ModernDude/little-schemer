@@ -106,7 +106,26 @@
  (define-test (multirember-test)
    (assert-equal '(coffee tea and hick)
                  (multirember 'cup '(coffee cup tea cup and hick cup))
-                 "remove item when in list twice")))
-
+                 "remove item when in list twice"))
+ (define-test (multiinsertR-test)
+   (assert-equal '(i love coffee tea and more coffee tea)
+                 (multiinsertR 'tea 'coffee 
+                               '(i love coffee and more coffee))
+                 "insert 2 values to right"))
+ (define-test (multiinsertL-test)
+   (assert-equal '(i love tea coffee and more tea coffee)
+                 (multiinsertL  'tea 'coffee 
+                                    '(i love coffee and more coffee))
+                 "isnert 2 values to left"))
+ (define-test (multisubst-test)
+   (assert-equal '(a a a)
+                 (multisubst 'a 'b  '(b b b))
+                 "replace all occurances of b with a")
+   (assert-equal '(a a a)
+                 (multisubst 'q 'f '(a a a))
+                 "no replacements found")))
 
  (run-registered-tests)
+
+
+
