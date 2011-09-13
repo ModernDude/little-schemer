@@ -184,11 +184,26 @@
                  (pick 4 '(lasagna spaghetti ravioli macaroni meatball))))
  (define-test (rempick-test)
    (assert-equal '(hotdogs with mustard)
-                 (rempick 3 '(hotdogs with hot mustard)))))
+                 (rempick 3 '(hotdogs with hot mustard))))
+ (define-test (no-nums-test)
+   (assert-equal '(a x t t ss s s)
+                 (no-nums '(a 1 x 2 t t 3 ss s s))
+                 "remove non numbers"))
+ (define-test (all-nums-test)
+   (assert-equal '(1 2 3 4)
+                 (all-nums '(q 1 e 2 e 3 e 4 n n))))
+ (define-test (equan-test)
+   (assert-true (eqan? 1 1))
+   (assert-true (eqan? 'a 'a)))
+ (define-test (occur-tests)
+   (assert-equal 1 (occur 1 '(1 2 3 2 3)))
+   (assert-equal 3 (occur 'a '(1 a c 3 a 2 a)))))
+
 
 
 
  (run-registered-tests)  
+
 
 
 
