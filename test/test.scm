@@ -197,7 +197,13 @@
    (assert-true (eqan? 'a 'a)))
  (define-test (occur-tests)
    (assert-equal 1 (occur 1 '(1 2 3 2 3)))
-   (assert-equal 3 (occur 'a '(1 a c 3 a 2 a)))))
+   (assert-equal 3 (occur 'a '(1 a c 3 a 2 a))))
+ (define-test (one-tests)
+   (assert-true (one? 1))
+   (assert-false (one? 2))))
+
+
+
 
 
 
