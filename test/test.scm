@@ -2,7 +2,7 @@
 (load "./../lib/test-manager/load.scm")
 
 (in-test-group
- toys
+ 01-toys
  (define-test (atom-tests)
    (assert-true (atom? 'turkey) "Symbol is an atom")
    (assert-true (atom? 1492) "Number is an atom")
@@ -51,7 +51,7 @@
 
 
 (in-test-group
- do-it-do-it-again-and-again-and-again
+ 02-do-it-do-it-again-and-again-and-again
  (define-test (atom-test)
    (assert-true (lat? '(Jack Sprat could eat no chicken fat))
                 "many symbols is as list is a lat")
@@ -68,7 +68,7 @@
                  "Symbol is not in empty list")))
 
 (in-test-group
- cons-the-magnificent
+ 03-cons-the-magnificent
  (define-test (rember-test)
    (assert-equal '(lamb chops and jelly)
                  (rember 'mint '(lamb chops and mint jelly))
@@ -133,7 +133,7 @@
 
 
 (in-test-group
- numbers-games
+ 04-numbers-games
  (define-test (add1-test)
    (assert-equal 68 (add1 67)))
  (define-test (sub1-test)
