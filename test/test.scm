@@ -49,7 +49,6 @@
    (assert-false (null? 'spaghetti) "symbol is not null"))
  )
 
-
 (in-test-group
  02-do-it-do-it-again-and-again-and-again
  (define-test (atom-test)
@@ -63,7 +62,7 @@
    (assert-false (member? 'poached '(fried eggs and scrambled eggs))
                  "Symbol is not in list")
    (assert-true (member? 'meat '(mashed potatoes and meat gravy))
-                 "Symbol is in list")
+                "Symbol is in list")
    (assert-false (member? 'liver '())
                  "Symbol is not in empty list")))
 
@@ -115,13 +114,13 @@
                  "remove item when in list twice"))
  (define-test (multiinsertR-test)
    (assert-equal '(i love coffee tea and more coffee tea)
-                 (multiinsertR 'tea 'coffee 
+                 (multiinsertR 'tea 'coffee
                                '(i love coffee and more coffee))
                  "insert 2 values to right"))
  (define-test (multiinsertL-test)
    (assert-equal '(i love tea coffee and more tea coffee)
-                 (multiinsertL  'tea 'coffee 
-                                    '(i love coffee and more coffee))
+                 (multiinsertL  'tea 'coffee
+                                '(i love coffee and more coffee))
                  "isnert 2 values to left"))
  (define-test (multisubst-test)
    (assert-equal '(a a a)
@@ -130,7 +129,6 @@
    (assert-equal '(a a a)
                  (multisubst 'q 'f '(a a a))
                  "no replacements found")))
-
 
 (in-test-group
  04-numbers-games
@@ -202,7 +200,6 @@
    (assert-true (one? 1))
    (assert-false (one? 2))))
 
-
 (in-test-group
  05-oh-my-gawd-its-full-of-stars
  (define-test (rember*-tests)
@@ -214,8 +211,8 @@
                  "Remove atoms from sexp"))
  (define-test (insertR*-tests)
    (assert-equal '(first second third)
-                (insertR* 'second 'first '(first third))
-                "insert to right in list" )
+                 (insertR* 'second 'first '(first third))
+                 "insert to right in list" )
    (assert-equal '((how much (wood))
                    could
                    ((a (wood) chuck roast))
@@ -225,7 +222,7 @@
                  (insertR*
                   'roast
                   'chuck
-                   '((how much (wood))
+                  '((how much (wood))
                     could
                     ((a (wood) chuck))
                     (((chuck)))
@@ -289,14 +286,36 @@
    (assert-true (eqlist? '(a (a 2 (a))) '(a (a 2 (a)))) "sexp is eq")
    (assert-false (eqlist? '(a (1 2 a)) '(x (1 2 a))) "sexp is not eq")))
 
+(in-test-group
+ 06-shadows
+ (define-test (numbered?-tests)
+   (assert-true (numbered? 2) "Number is always true")
+   (assert-true (numbered? '(1 + 1)) "single infix addition is true")
+   (assert-true (numbered? '(4 + (1 + 1))) "combined infix is true")
+   (assert-false (numbered? 'a) "symbol fails")
+   (assert-false (numbered? '(+ 2 2)) "prefix with numbers fails")
+   (assert-false (numbered? '(2 + (+ 2 2))) "prefix in sexp fails"))
+ (define-test (1st-sub-exp-tests)
+   (assert-equal 2 (1st-sub-exp '(2 * 3)))
+   (assert-equal '* (operator '(2 * 3)))
+   (assert-equal 3 (2nd-sub-exp '(2 * 3))))
+ (define-test (value-tests)
+   (assert-equal 20 (value '(5 * 4)) "value of single exression")
+   (assert-equal 20 (value '(5 * (2 + 2))) "value of nested exressions"))
+ (define-test (zzero?-tests)
+   (assert-true (zzero? '()) "sum of zero parens is zero")
+   (assert-false (zzero? '(())) "sum of one zero is not zero")
+   )
+ (define-test (zadd1-tests)
+   (assert-true 5 (zadd1 '(()()()())) "add to non empty list")
+   (assert-true 1 (zadd1 '()) "add to empty list"))
+ (define-test (zsub1-tests)
+   (assert-true 1 (zsub1 '(()())) "sub from non empty list")
+   ;;(assert-true -1 (zsub1 '()) "sub from empty list; won't work. don't have representation for this.")
+   )
+ (define-test (zplus-tests)
+   (assert-true 0 (zplus '() '()) "two empty lists added is zero")
+   (assert-true 2 (zplus '(()) '(())) "add two non empty lists"))
+ )
 
-
-
-
-
- (run-registered-tests)  
-
-
-
-
-
+(run-registered-tests)

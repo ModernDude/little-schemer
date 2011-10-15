@@ -1,10 +1,7 @@
-
-
 ;; Is x an atom
 (define atom?
   (lambda (x)
     (and (not (pair? x)) (not (null? x)))))
-
 
 ;; Is l a list of atoms
 (define lat?
@@ -22,7 +19,6 @@
      (else (or (eq? (car lat) a)
                (member? a (cdr lat)))))))
 
-
 ;; Take an atom and a list of atoms and makes a new list of atoms with
 ;; the first occurence of the atom in the old list removed.
 (define rember
@@ -33,7 +29,6 @@
      (else (cons (car lat)
                  (rember a (cdr lat)))))))
 
-
 ;; Take a list and build another list composed of the first sexp
 ;; within each internal sublist
 (define firsts
@@ -42,7 +37,7 @@
      ((null? l) '())
      (else (cons (car (car l))
                  (firsts (cdr l)))))))
-     
+
 ;; Build a lat with new inserted to the right of the first occurance
 ;; of old.
 (define insertR
@@ -53,9 +48,9 @@
             ((eq? (car lat) old)
              (cons old
                    (cons new (cdr lat))))
-             (else (cons (car lat)
-                   (insertR new old
-                            (cdr lat)))))))))
+            (else (cons (car lat)
+                        (insertR new old
+                                 (cdr lat)))))))))
 
 ;; Build a lat with new inserted to the left  of the first occurance of old.
 (define insertL
@@ -81,7 +76,7 @@
                         (subst new old
                                (cdr lat)))))))))
 
-;; Replaces the first occurrence of o1 or the first occurrence of o2 by new 
+;; Replaces the first occurrence of o1 or the first occurrence of o2 by new
 (define subst2
   (lambda (new o1 o2 lat)
     (cond
@@ -89,7 +84,7 @@
      (else (cond
             ((or (eq? (car lat) o1)
                  (eq? (car lat) o2))
-                (cons new (cdr lat)))
+             (cons new (cdr lat)))
             (else (cons (car lat)
                         (subst2 new o1 o2 (cdr lat)))))))))
 
@@ -112,7 +107,7 @@
      ((null? lat) (quote ()))
      (else
       (cond
-       ((eq? (car lat) old) 
+       ((eq? (car lat) old)
         (cons (car lat)
               (cons new
                     (multiinsertR new old
@@ -134,7 +129,6 @@
                                   (cdr lat)))))
        (else (cons (car lat)
                    (multiinsertL new old (cdr lat)))))))))
-
 
 ;; Replace all occurrences of old with new within lat.
 (define multisubst
@@ -197,7 +191,6 @@
      ((zero? n) #t)
      (else (lt? (sub1 n) (sub1 m))))))
 
-
 ;; Same as scheme's eq?
 (define =?
   (lambda (n m)
@@ -205,7 +198,6 @@
      ((gt? n m) #f)
      ((lt? n m) #f)
      (else #t))))
-
 
 ;; Same ao sheme's expt
 (define power
@@ -238,14 +230,12 @@
      ((null? lat) 0)
      (else (add1 (length (cdr lat)))))))
 
-
 ;; Return nth atom from a list of atoms. First item starts at 1
 (define pick
   (lambda (n lat)
     (cond
      ((one? n) (car lat))
      (else (pick (sub1 n) (cdr lat))))))
-
 
 ;; Returns a new lat with the atom at index n removed.
 (define rempick
@@ -255,7 +245,6 @@
      (else (cons (car lat)
                  (rempick (sub1 n)
                           (cdr lat)))))))
-
 
 ;; Remove all numbers from list of atoms
 (define no-nums
@@ -281,7 +270,6 @@
               (all-nums (cdr lat))))
        (else (all-nums (cdr lat))))))))
 
-
 ;; Equal if the same atom
 (define eqan?
   (lambda (a1 a2)
@@ -303,12 +291,10 @@
         (add1 (occur a (cdr lat))))
        (else (occur a (cdr lat))))))))
 
-
 ;; determine if atom is number 1
 (define one?
   (lambda (n)
     (=? n 1)))
-
 
 ;; remove atom from s-expression
 (define rember*
@@ -321,9 +307,8 @@
         (rember* a (cdr l)))
        (else (cons (car l)
                    (rember* a (cdr l))))))
-      (else (cons (rember* a (car l))
-                  (rember* a (cdr l)))))))
-
+     (else (cons (rember* a (car l))
+                 (rember* a (cdr l)))))))
 
 ;; insert the atom new to the right of the atom old anywhere in the
 ;; sexp
@@ -371,11 +356,11 @@
         (cons new
               (subst* new old (cdr l))))
        (else (cons (car l)
-             (subst* new old
-                     (cdr l))))))
-    (else
-     (cons (subst* new old (car l))
-           (subst* new old (cdr l)))))))
+                   (subst* new old
+                           (cdr l))))))
+     (else
+      (cons (subst* new old (car l))
+            (subst* new old (cdr l)))))))
 
 (define insertL*
   (lambda (new old l)
@@ -396,7 +381,6 @@
                  (insertL* new old
                            (cdr l)))))))
 
-
 ;; determines if a is a member of the sexp l
 (define member*
   (lambda (a l)
@@ -408,14 +392,12 @@
      (else (or (member* a (car l))
                (member* a (cdr l)))))))
 
-
 ;; find leftmost atom in list
 (define leftmost
   (lambda (l)
     (cond
      ((atom? (car l)) (car l))
      (else (leftmost (car l))))))
-
 
 ;; same number, atom or list
 (define _equal?
@@ -436,3 +418,67 @@
      (else
       (and (_equal? (car l1) (car l2))
            (eqlist? (cdr l1) (cdr l2)))))))
+
+;; determines if the input is an aritmetit
+;; exression in infix notation
+(define numbered?
+  (lambda (aexp)
+    (cond
+     ((atom? aexp) (number? aexp))
+     (else
+      (and (numbered? (car aexp))
+           (numbered?
+            (car (cdr (cdr aexp)))))))))
+
+;; gets the first exression from an arithmetic expression triplett
+(define 1st-sub-exp
+  (lambda (aexp)
+    (car aexp)))
+
+;; gets the second exression from an arithmetic expresion triplett
+(define 2nd-sub-exp
+  (lambda (aexp)
+    (car (cdr (cdr aexp)))))
+
+;; gets the operator part of an arithmetic exression triplett
+(define operator
+  (lambda (aexp)
+    (car (cdr aexp))))
+
+;; calculate the value of a an arithmetic exression
+(define value
+  (lambda (nexp)
+    (cond
+     ((atom? nexp) nexp)
+     ((eq? (operator nexp) (quote +))
+      (+ (value (1st-sub-exp nexp))
+         (value (2nd-sub-exp nexp))))
+     ((eq? (operator nexp) (quote *))
+      (* (value (1st-sub-exp nexp))
+         (value (2nd-sub-exp nexp))))
+     ((eq? (operator nexp) (quote -))
+      (- (value (1st-sub-exp nexp))
+         (value (2nd-sub-exp nexp))))
+     ((eq? (operator nexp) (quote /))
+      (/ (value (1st-sub-exp nexp))
+         (value (2nd-sub-exp nexp)))))))
+
+;; following 4 functions assume numbers a number is represented as
+;; a list of open closed parens.
+(define zzero?
+  (lambda (n)
+    (null? n)))
+
+(define zadd1
+  (lambda (n)
+    (cons (quote ()) n)))
+
+(define zsub1
+  (lambda (n)
+    (cdr n)))
+
+(define zplus
+  (lambda (n m)
+    (cond
+     ((zzero? m) n)
+     (else (zadd1 (zplus n (zsub1 m)))))))
