@@ -474,4 +474,28 @@
                 (evens-only*&co '(1 (2 3 (4)) 5 6 7 8 9 10) the-last-friend)
                 "nested")))
 
+(in-test-group
+ 09-again-and-again
+ (define-test (looking-tests)
+   (assert-true (looking 'caviar '(6 2 4 caviar 5 7 3)))
+   (assert-false (looking 'caviar '(6 2 grits caviar 5 7 3))))
+(define-test (shift-tests)
+  (assert-equal '(1 (2 2))
+                (shift '((1 2) 2)))
+  (assert-equal '(1 (2 (3 4)))
+                (shift '((1 2) (3 4)))))
+(define-test (length*-tests)
+  (assert-equal 2 (length* '(1 1)))
+  (assert-equal 3 (length* '((1 1) 2)))
+  (assert-equal 4 (length* '((1 1) (2 2)))))
+(define-test (weight*-tests)
+  (assert-equal 7 (weight* '((a b) c)))
+  (assert-equal 5 (weight* '(a (b c)))))
+(define-test (collatz-tests)
+  (assert-equal 1 (C 2))
+  (assert-equal 1 (C 2343243423)))
+
+ )
+
+
 (run-registered-tests)
